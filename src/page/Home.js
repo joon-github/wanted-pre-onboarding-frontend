@@ -1,25 +1,18 @@
 import styled from "styled-components";
+import { MainStyle } from "../style/MainStyle";
 
 const Home = () => {
   return (
-    <HomeStyle>
-      <p className="content">
+    <MainStyle>
+      <HomeConent>
         TodoList <br /> 회원 가입 후 이용해주세요
-      </p>
-    </HomeStyle>
+      </HomeConent>
+    </MainStyle>
   );
 };
-const HomeStyle = styled.main`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 50px;
-  height: calc(100vh - 50px);
-  background-color: rgb(244, 244, 244);
-  .content {
-    color: gray;
-    font-size: 30px;
-    font-weight: bold;
-  }
+const HomeConent = styled.main`
+  color: gray;
+  font-size: 30px;
+  font-weight: bold;
 `;
 export default Home;
