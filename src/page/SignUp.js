@@ -3,19 +3,18 @@ import styled from "styled-components";
 import { useState } from "react";
 import Input from "../componenet/Input";
 import { useNavigate } from "react-router-dom";
-const SignUp = () => {
+import { alertForErrorHttpStatus } from "../util/httpStatus";
+const SignUp = ({ setIsLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(true);
-  const [signUpFormData, setSignUpFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const signUpFormData = { email, password };
   const regex = /^[0-9A-Za-z._-]+@[0-9A-Za-z._-]+\.[a-zA-Z]{2,3}$/;
   const navigate = useNavigate();
-  const onChangeinputValue = (value, name, e) => {
-    if (name === "E-mail") {
+  const onChangeinputValue = (e, name) => {
+    const value = e.target.value;
+    if (name === "아이디") {
       setEmail(value);
     }
     if (name === "비밀번호") {
@@ -31,12 +30,12 @@ const SignUp = () => {
         (e.target.value === password) ||
       e.target.value === confirmPassword
     ) {
-      setSignUpFormData({ email: email, password: password });
       setIsSignUp(false);
     } else {
       setIsSignUp(true);
     }
   };
+
   const onClickSignUp = (e) => {
     e.preventDefault();
 
@@ -49,19 +48,16 @@ const SignUp = () => {
         return res.json(res);
       })
       .then((data) => {
-        const { statusCode, message } = data;
-        console.log(data);
-
-        if (statusCode) {
-          if (statusCode === 400) {
-            alert(message);
-            return;
-          }
-        } else {
+        // access_token 있는 경우 성공
+        if (data.access_token) {
           alert("회원가입에 성공했습니다.");
           localStorage.setItem("access_token", data.access_token);
           navigate("/todo");
+          setIsLogin(true);
+          return;
         }
+        // http status error인 경우
+        alertForErrorHttpStatus(data);
       });
   };
   return (
@@ -72,7 +68,7 @@ const SignUp = () => {
           <Input
             value={email}
             type="email"
-            name="E-mail"
+            name="아이디"
             placeholder="아이디를 입력해주세요"
             onChange={onChangeinputValue}
           ></Input>

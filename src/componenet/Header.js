@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-const Header = () => {
+const Header = ({ isLogin }) => {
   return (
     <HeaderStyle>
       <div className="title">TodoList</div>
-      {localStorage.getItem("access_token") ? (
+      {isLogin ? (
         <div>로그아웃</div>
       ) : (
-        <div className="btns">
+        <div className="btnArea">
           <Link className="loginBtn" to="/login">
             로그인
           </Link>
@@ -34,7 +34,7 @@ const HeaderStyle = styled.header`
     margin-left: 30px;
     font-weight: bold;
   }
-  .btns {
+  .btnArea {
     margin-right: 30px;
     color: black;
     a:visited {
