@@ -4,7 +4,10 @@ import { useState } from "react";
 import Input from "../componenet/Input";
 import { useNavigate } from "react-router-dom";
 import { alertForErrorHttpStatus } from "../util/httpStatus";
-const SignUp = ({ setIsLogin }) => {
+import { fetchJsonData } from "../util/fetch";
+import { setAccessToken } from "../util/AccessToken";
+import Button from "../componenet/Button";
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,35 +39,30 @@ const SignUp = ({ setIsLogin }) => {
     }
   };
 
-  const onClickSignUp = (e) => {
+  const onClickSignUp = async (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8000/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(signUpFormData),
-    })
-      .then((res) => {
-        return res.json(res);
-      })
-      .then((data) => {
-        // access_token 있는 경우 성공
-        if (data.access_token) {
-          alert("회원가입에 성공했습니다.");
-          localStorage.setItem("access_token", data.access_token);
-          navigate("/todo");
-          setIsLogin(true);
-          return;
-        }
-        // http status error인 경우
-        alertForErrorHttpStatus(data);
-      });
+    const data = await fetchJsonData(
+      "/auth/signup",
+      "POST",
+      { "Content-Type": "application/json" },
+      signUpFormData
+    );
+    // access_token 있는 경우 성공
+    if (data.access_token) {
+      alert("회원가입에 성공했습니다.");
+      setAccessToken(data.access_token);
+      navigate("/todo");
+      return;
+    }
+    // http status error인 경우
+    alertForErrorHttpStatus(data);
   };
   return (
     <MainStyle>
       <h2 className="title">회원가입</h2>
       <Main>
-        <form>
+        <form className="form">
           <Input
             value={email}
             type="email"
@@ -72,7 +70,9 @@ const SignUp = ({ setIsLogin }) => {
             placeholder="아이디를 입력해주세요"
             onChange={onChangeinputValue}
           ></Input>
-          <p>{regex.test(email) ? null : "이메일 형식으로 입력해주세요."}</p>
+          <p className="error_message">
+            {regex.test(email) ? null : "이메일 형식으로 입력해주세요."}
+          </p>
           <Input
             value={password}
             type="password"
@@ -80,7 +80,9 @@ const SignUp = ({ setIsLogin }) => {
             placeholder="비밀번호를 입력해주세요"
             onChange={onChangeinputValue}
           ></Input>
-          <p>{password.length < 8 ? " 8자리 이상 입력해주세요." : null}</p>
+          <p className="error_message">
+            {password.length < 8 ? " 8자리 이상 입력해주세요." : null}
+          </p>
           <Input
             value={confirmPassword}
             type="password"
@@ -88,14 +90,18 @@ const SignUp = ({ setIsLogin }) => {
             placeholder="비밀번호를 입력해주세요"
             onChange={onChangeinputValue}
           ></Input>
-          <p>
+          <p className="error_message">
             {confirmPassword !== password
               ? "동일한 비밀번호를 입력해주세요."
               : null}
           </p>
-          <button disabled={isSignUp} onClick={(e) => onClickSignUp(e)}>
-            회원가입
-          </button>
+          <div className="btnArea">
+            <Button
+              text="회원가입"
+              disabled={isSignUp}
+              hadleClickFunc={onClickSignUp}
+            ></Button>
+          </div>
         </form>
       </Main>
     </MainStyle>
@@ -103,16 +109,29 @@ const SignUp = ({ setIsLogin }) => {
 };
 
 const Main = styled.main`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid lightgray;
   margin-bottom: 30px;
   box-shadow: 0 4px 2px 0px lightgray;
   border-radius: 10px;
-  width: 40%;
-  height: calc(100% - 200px);
+  width: 20%;
+  height: 300px;
   background-color: white;
-  .inputForm {
-    display: flex;
-    align-items: center;
-    height: 30px;
+  padding: 15px;
+  .form {
+    width: 100%;
+  }
+  .error_message {
+    height: 10px;
+    font-size: 10px;
+    color: red;
+  }
+  .btnArea {
+    height: 35px;
   }
 `;
 export default SignUp;

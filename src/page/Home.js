@@ -1,18 +1,20 @@
 import styled from "styled-components";
 import { MainStyle } from "../style/MainStyle";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "./Login";
-const Home = () => {
+import { useEffect } from "react";
+const Home = ({ isLogin, setIsLogin }) => {
   const navigate = useNavigate();
-  if (localStorage.getItem("access_token")) {
-    navigate("/todo");
-  }
+  useEffect(() => {
+    if (isLogin) {
+      navigate("/todo");
+    }
+  }, []);
   return (
     <MainStyle>
       <HomeConent>
         <h1>TodoList</h1>
-        <Login></Login>
+        <Login setIsLogin={setIsLogin}></Login>
       </HomeConent>
     </MainStyle>
   );

@@ -1,14 +1,27 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-const Header = ({ isLogin }) => {
+import { removeAccessToken } from "../util/AccessToken";
+import Button from "./Button";
+
+const Header = ({ isLogin, setIsLogin }) => {
+  const navigate = useNavigate();
+
+  const onClickLogout = () => {
+    removeAccessToken();
+    setIsLogin(false);
+    navigate("/");
+  };
+
   return (
     <HeaderStyle>
       <div className="title">TodoList</div>
       {isLogin ? (
-        <div>로그아웃</div>
+        <div className="btnArea">
+          <Button text="로그아웃" hadleClickFunc={onClickLogout}></Button>
+        </div>
       ) : (
         <div className="btnArea">
-          <Link className="loginBtn" to="/login">
+          <Link className="loginBtn" to="/">
             로그인
           </Link>
           <Link to="/signup">회원가입</Link>
@@ -35,6 +48,10 @@ const HeaderStyle = styled.header`
     font-weight: bold;
   }
   .btnArea {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
     margin-right: 30px;
     color: black;
     a:visited {
