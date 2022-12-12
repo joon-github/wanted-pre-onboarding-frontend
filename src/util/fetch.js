@@ -1,6 +1,6 @@
 export const fetchJsonData = async (url, method, headers, data) => {
   const body = JSON.stringify(data);
-  const HOST = "http://localhost:8000";
+  const HOST = "https://pre-onboarding-selection-task.shop";
   const res = await fetch(HOST + url, {
     method: method,
     headers: headers,
