@@ -1,5 +1,5 @@
-# Getting Started with Create React App
+# 원티드 프리온보딩 프론트엔드 - 지원자 편범준 과제 TODO LIST
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 
 
